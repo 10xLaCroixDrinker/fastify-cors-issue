@@ -1,3 +1,5 @@
+# [Solved!](https://github.com/fastify/fastify-cors/issues/290#issuecomment-1900641101)
+
 > This repo serves to reproduce a bug in `@fatify/cors` wherein `preHandler` hooks
 > are called twice when the delegator rejects the preflight request.
 

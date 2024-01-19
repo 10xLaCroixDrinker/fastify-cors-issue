@@ -12,28 +12,33 @@ const hookLoggingPlugin = require('./hookLogging');
       },
     },
   });
-  fastify.register(hookLoggingPlugin);
-  fastify.register(fastifyCors, {
-    // hook: 'preHandler',
-    delegator: (req, callback) => {
-      const corsOptions = { origin: false };
-      if (/^success$/m.test(req.headers.origin)) {
-        corsOptions.origin = true;
-      }
-      callback(null, corsOptions);
-    },
-  });
 
-  fastify.get('/', async function (request, reply) {
-    return reply.code(200).type('text/plain').send('Hello world');
-  })
+  fastify.register(async function (fastify) {
+    // the logging should be inside ;)
+    fastify.register(hookLoggingPlugin);
 
-  fastify.post('/', async function (request, reply) {
-    return reply.code(200).type('text/plain').send('Hello world');
-  })
+    fastify.register(fastifyCors, {
+      // hook: 'preHandler',
+      delegator: (req, callback) => {
+        const corsOptions = { origin: false };
+        if (/^success$/m.test(req.headers.origin)) {
+          corsOptions.origin = true;
+        }
+        callback(null, corsOptions);
+      },
+    });
 
-  fastify.setNotFoundHandler(async (_request, reply) => {
-    reply.code(404).type('text/plain').send('Not found');
+    fastify.get('/', async function (request, reply) {
+      return reply.code(200).type('text/plain').send('Hello world');
+    })
+
+    fastify.post('/', async function (request, reply) {
+      return reply.code(200).type('text/plain').send('Hello world');
+    })
+
+    fastify.setNotFoundHandler(async (_request, reply) => {
+      reply.code(404).type('text/plain').send('Not found');
+    });
   });
   
   return fastify.listen({ port: 3000 });
